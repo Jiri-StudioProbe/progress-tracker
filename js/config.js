@@ -39,7 +39,9 @@ window.TRAINING_CONFIG = {
       icon: '🔥',
       color: '#ff6b6b',
       exercises: [
-        { id: 'king-of-the-hill', name: 'King of the hill' }
+        { id: 'king-of-the-hill', name: 'King of the hill' },
+        { id: 'fifty-fifty-race', name: '50/50 race to the ball' },
+        { id: 'shielding-practice', name: 'Shielding practice' }
       ]
     },
     {
