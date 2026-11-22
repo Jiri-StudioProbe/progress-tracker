@@ -75,10 +75,30 @@
     const need = Math.min(C.minPerTheme, avail.length);
     return { avail, ticked, done: ticked.length, need, complete: ticked.length >= need };
   }
+  // Themes with a weeklyTarget are tracked every day but don't block a day from completing.
+  const isDaily = (theme) => !theme.weeklyTarget;
+  const dailyThemes = C.themes.filter(isDaily);
+  const weeklyThemes = C.themes.filter((t) => !isDaily(t));
   function dayStatus(date) {
     const themes = C.themes.map((t) => themeStatus(date, t));
-    const n = themes.filter((t) => t.complete).length;
-    return { themes, themesDone: n, complete: n === C.themes.length };
+    const n = themes.filter((t, i) => isDaily(C.themes[i]) && t.complete).length;
+    return {
+      themes, themesDone: n, dailyCount: dailyThemes.length,
+      complete: n === dailyThemes.length,
+      everyTheme: themes.every((t) => t.complete)
+    };
+  }
+  // How a weekly-target theme is doing in plan week `w` (0-based).
+  function themeWeek(theme, w) {
+    const t = today(), first = addDays(START, w * 7);
+    let count = 0, left = 0;
+    for (let d = 0; d < 7; d++) {
+      const date = addDays(first, d);
+      if (themeStatus(date, theme).complete) count++;
+      else if (date >= t) left++; // today (if not done yet) and later days can still add to the count
+    }
+    const target = Math.min(theme.weeklyTarget, 7);
+    return { count, target, left, met: count >= target, reachable: count + left >= target, over: addDays(first, 6) < t };
   }
   function lastElapsed() { // last plan day that has started, or null if the plan hasn't begun
     const t = today();
@@ -136,22 +156,39 @@
     }
 
     html += '<div class="day-summary"><div style="flex:1"><div class="bar"><i style="width:' +
-      (status.themesDone / C.themes.length * 100) + '%"></i></div></div>' +
+      (status.themesDone / status.dailyCount * 100) + '%"></i></div></div>' +
       '<span class="pill' + (status.complete ? ' done' : '') + '">' +
-      (status.complete ? 'Day complete ✓' : status.themesDone + ' / ' + C.themes.length + ' themes') + '</span></div>';
+      (status.complete ? 'Day complete ✓' : status.themesDone + ' / ' + status.dailyCount + ' daily themes') + '</span></div>';
+    if (weeklyThemes.length) {
+      html += '<p class="note" style="margin-top:6px">' + weeklyThemes.map((x) => esc(x.name)).join(' and ') +
+        ' count toward weekly targets, not the daily total.</p>';
+    }
 
     if (future) html += '<div class="banner">🔒 This day hasn’t arrived yet, so ticking is locked.</div>';
 
     C.themes.forEach((theme, i) => {
       const ts = status.themes[i];
+      const flexible = !isDaily(theme);
+      let weekly = '';
+      if (flexible) {
+        const tw = themeWeek(theme, Math.floor(idx / 7));
+        let msg;
+        if (tw.met) msg = '✓ target met';
+        else if (tw.over) msg = 'target missed this week';
+        else if (!tw.reachable) msg = 'can’t reach it this week';
+        else msg = tw.left + ' day' + (tw.left === 1 ? '' : 's') + ' left';
+        weekly = '<p class="weekly' + (!tw.met && !tw.reachable ? ' warn' : '') + '">This week: <b>' + tw.count + ' / ' + tw.target +
+          '</b> days · ' + msg + '</p>';
+      }
       html += '<section class="card theme-card' + (ts.complete ? ' complete' : '') + (future ? ' locked' : '') +
         '" style="--c:' + theme.color + '">' +
         '<div class="theme-head"><span aria-hidden="true">' + theme.icon + '</span>' +
-        '<h2 class="name">' + esc(theme.name) + '</h2>' +
+        '<h2 class="name">' + esc(theme.name) + '</h2>' + (flexible ? '<span class="tag">weekly</span>' : '') +
         '<span class="count">' + ts.done + '/' + ts.need + (ts.complete ? ' ✓' : '') + '</span></div>' +
         '<div class="bar"><i style="width:' + (ts.need ? Math.min(100, ts.done / ts.need * 100) : 100) + '%"></i></div>' +
-        '<p class="need muted">Do at least ' + ts.need + ' of ' + ts.avail.length + ' exercise' + (ts.avail.length === 1 ? '' : 's') +
-        (ts.avail.length < C.minPerTheme ? ' (add more in Settings to reach ' + C.minPerTheme + ')' : '') + '</p>' +
+        '<p class="need muted">' + (flexible ? 'Optional today — ' : '') + 'Do at least ' + ts.need + ' of ' + ts.avail.length + ' exercise' + (ts.avail.length === 1 ? '' : 's') +
+        (flexible ? ' for today to count toward your weekly target' : '') +
+        (ts.avail.length < C.minPerTheme ? ' (add more in Settings to reach ' + C.minPerTheme + ')' : '') + '</p>' + weekly +
         '<div class="ex-list">';
       ts.avail.forEach((ex) => {
         const on = ts.ticked.indexOf(ex.id) >= 0;
@@ -178,8 +215,9 @@
 
   function renderPlan() {
     const t = today();
-    let html = '<p class="muted" style="margin-top:6px">Tap a day to open it. Dots show which themes are done (' +
-      C.themes.map((x) => x.icon).join(' ') + ').</p>';
+    let html = '<p class="muted" style="margin-top:6px">Tap a day to open it. A day is complete when ' +
+      dailyThemes.map((x) => x.icon).join(' ') + ' are done. Dots show every theme (' + C.themes.map((x) => x.icon).join(' ') +
+      ')' + (weeklyThemes.length ? '; ' + weeklyThemes.map((x) => x.icon).join(' ') + ' are weekly targets.' : '.') + '</p>';
     for (let w = 0; w < state.weeks; w++) {
       const first = addDays(START, w * 7);
       let completeDays = 0;
@@ -194,7 +232,7 @@
         if (date > t) cls.push('future');
         if (date === t) cls.push('today');
         tiles += '<button class="' + cls.join(' ') + '" data-action="goto" data-date="' + date + '" aria-label="' +
-          esc(longDate(date)) + ', ' + s.themesDone + ' of ' + C.themes.length + ' themes done">' +
+          esc(longDate(date)) + ', ' + s.themesDone + ' of ' + s.dailyCount + ' daily themes done">' +
           '<span class="dnum">' + parse(date).getDate() + '</span>' +
           '<span class="dmon">' + fmt(date, { month: 'short' }) + '</span>' +
           '<span class="dots">' + C.themes.map((th, i) =>
@@ -204,6 +242,7 @@
       const dow = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'].map((x) => '<div class="dow">' + x + '</div>').join('');
       html += '<div class="week-head" style="margin-top:18px"><h2>Week ' + (w + 1) + '</h2><span>' +
         shortDate(first) + ' – ' + shortDate(addDays(first, 6)) + ' · ' + completeDays + '/7 days</span></div>' +
+        weekChips(w) +
         '<div class="week-grid">' + dow + tiles + '</div>';
     }
     html += '<div class="legend">' + C.themes.map((th) =>
@@ -211,16 +250,37 @@
     return html;
   }
 
+  // "🔥 2/3  🎯 3/3" chips for the weekly-target themes in plan week w
+  function weekChips(w, withLabel) {
+    if (!weeklyThemes.length) return '';
+    return '<div class="wk-chips">' + weeklyThemes.map((th) => {
+      const tw = themeWeek(th, w);
+      const cls = tw.met ? 'met' : tw.over || !tw.reachable ? 'missed' : 'open';
+      return '<span class="chip ' + cls + '" style="--c:' + th.color + '" title="' + esc(th.name) + ' weekly target">' +
+        th.icon + ' ' + (withLabel ? esc(th.name) + ' ' : '') + tw.count + '/' + tw.target + (tw.met ? ' ✓' : '') + '</span>';
+    }).join('') + '</div>';
+  }
+
   function renderProgress() {
     const last = lastElapsed();
     const elapsed = last ? diffDays(START, last) + 1 : 0;
     const total = totalDays();
-    let completeDays = 0;
+    let completeDays = 0, everyDays = 0;
     const themeDays = C.themes.map(() => 0);
     for (let i = 0; i < elapsed; i++) {
       const s = dayStatus(addDays(START, i));
       if (s.complete) completeDays++;
+      if (s.everyTheme) everyDays++;
       s.themes.forEach((x, k) => { if (x.complete) themeDays[k]++; });
+    }
+    // weekly targets: only weeks that are over, or already hit, count toward the "x / y"
+    const weeksStarted = last ? Math.floor(diffDays(START, last) / 7) + 1 : 0;
+    let targetsHit = 0, targetsDecided = 0;
+    for (let w = 0; w < weeksStarted; w++) {
+      weeklyThemes.forEach((th) => {
+        const tw = themeWeek(th, w);
+        if (tw.met) { targetsHit++; targetsDecided++; } else if (tw.over) targetsDecided++;
+      });
     }
     // exercise tick counts (over plan days)
     const counts = {};
@@ -238,19 +298,38 @@
       stat(completeDays + ' / ' + total, 'days completed') +
       stat(st.current, 'day streak 🔥') +
       stat(st.best, 'best streak') +
-      stat(ticks, 'exercises ticked') + '</div>';
+      stat(ticks, 'exercises ticked') +
+      (weeklyThemes.length ? stat(targetsHit + ' / ' + targetsDecided, 'weekly targets hit') : '') +
+      (weeklyThemes.length ? stat(everyDays, 'days with every theme') : '') + '</div>';
 
     html += '<section class="card"><h2>Overall</h2>' +
       rowBar('Plan complete', completeDays + ' of ' + total + ' days', completeDays / total * 100, '') +
       rowBar('Time elapsed', elapsed + ' of ' + total + ' days', elapsed / total * 100, '#6b8a7a') + '</section>';
 
-    html += '<section class="card"><h2>By theme</h2><p class="muted" style="font-size:.85rem">Days the theme target was met so far</p>';
+    html += '<section class="card"><h2>By theme</h2><p class="muted" style="font-size:.85rem">Days you reached the exercise minimum, so far' +
+      (weeklyThemes.length ? ' (weekly themes aren’t required every day)' : '') + '</p>';
     C.themes.forEach((th, k) => {
-      html += rowBar(th.icon + ' ' + th.name, themeDays[k] + ' / ' + elapsed, elapsed ? themeDays[k] / elapsed * 100 : 0, th.color);
+      html += rowBar(th.icon + ' ' + th.name + (isDaily(th) ? '' : ' · weekly'), themeDays[k] + ' / ' + elapsed, elapsed ? themeDays[k] / elapsed * 100 : 0, th.color);
     });
     html += '</section>';
 
-    html += '<section class="card"><h2>Weekly consistency</h2><p class="muted" style="font-size:.85rem">Fully completed days per week</p><div class="weeks-chart">';
+    if (weeklyThemes.length) {
+      html += '<section class="card"><h2>Weekly targets</h2><p class="muted" style="font-size:.85rem">Days per week reaching the minimum, against each target</p>';
+      weeklyThemes.forEach((th) => {
+        html += '<div class="theme-title" style="color:' + th.color + '"><span aria-hidden="true">' + th.icon + '</span>' + esc(th.name) +
+          ' · ' + Math.min(th.weeklyTarget, 7) + ' days a week</div><div class="wk-chips" style="margin-top:8px">';
+        for (let w = 0; w < weeksStarted; w++) {
+          const tw = themeWeek(th, w);
+          const cls = tw.met ? 'met' : tw.over || !tw.reachable ? 'missed' : 'open';
+          html += '<span class="chip ' + cls + '" style="--c:' + th.color + '">Wk ' + (w + 1) + ' · ' + tw.count + '/' + tw.target + (tw.met ? ' ✓' : '') + '</span>';
+        }
+        if (!weeksStarted) html += '<span class="muted" style="font-size:.85rem">Starts with the first week</span>';
+        html += '</div>';
+      });
+      html += '</section>';
+    }
+
+    html += '<section class="card"><h2>Weekly consistency</h2><p class="muted" style="font-size:.85rem">Completed days per week</p><div class="weeks-chart">';
     for (let w = 0; w < state.weeks; w++) {
       let n = 0;
       for (let d = 0; d < 7; d++) if (dayStatus(addDays(START, w * 7 + d)).complete) n++;
@@ -304,7 +383,7 @@
 
   function renderSettings() {
     let html = renderSync() + '<section class="card"><h2>Add an exercise</h2>' +
-      '<p class="note">Aggressive play only has one exercise, so one is enough for now. Add more here to raise its target (up to ' + C.minPerTheme + '). ' +
+      '<p class="note">Each theme needs ' + C.minPerTheme + ' exercises a day (or all of them if it has fewer). ' +
       'New exercises count from today onward — past days are never changed.</p>' +
       '<form id="add-ex"><div class="field"><label for="ex-theme">Theme</label><select id="ex-theme">' +
       C.themes.map((t) => '<option value="' + esc(t.id) + '">' + esc(t.icon + ' ' + t.name) + '</option>').join('') +

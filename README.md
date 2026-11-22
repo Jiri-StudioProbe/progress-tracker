@@ -6,12 +6,16 @@ A small, mobile-friendly web app for tracking daily football training over a 4-w
 ## How it works
 
 - Four themes: **Acceleration**, **Stamina**, **Aggressive play**, **Shooting**, each with its own exercises.
-- Every day, tick off the exercises you did. A theme is *done* when you've ticked at least 3 of its exercises
-  (or all of them if the theme has fewer than 3 — currently Aggressive play, which has only one).
-- A day is *complete* when all four themes are done.
+- Every day, tick off the exercises you did. A theme is *done* for a day when you've ticked at least 3 of its
+  exercises (or all of them if it has fewer).
+- **Daily themes** (Acceleration, Stamina) must be done for the day to be *complete*.
+- **Weekly themes** (Aggressive play, Shooting) can't always be done, so they don't block a day. They're still
+  tracked every day, and each needs **3 days per week** reaching the daily minimum. The app shows
+  "This week: 1 / 3 days · 4 days left", warns when a target can no longer be reached, and records which
+  weeks hit their target.
 - **Today** – tick exercises, step between days. Future days are locked.
 - **Plan** – 4-week calendar showing complete / missed / upcoming days.
-- **Progress** – days completed, streaks, per-theme and weekly stats, exercise log.
+- **Progress** – days completed, streaks, weekly targets hit, per-theme and weekly stats, exercise log.
 - **Edit times** – tap the time chip next to any exercise on the Today screen (e.g. "10 min", or "+ time" if blank) to change it.
 - **Settings** – add or remove your own exercises, add extra weeks, export/import a backup, reset.
 
@@ -38,7 +42,8 @@ Notes: the token lives only in that browser — don't use sync on a shared compu
 ## Changing the plan
 
 Edit `js/config.js` — start date (must be a Monday), number of weeks, the minimum per theme,
-and the themes/exercises.
+and the themes/exercises. Give a theme `weeklyTarget: N` to make it a weekly theme (N days a week);
+leave it out to require the theme every day.
 
 ## Publishing on GitHub Pages
 

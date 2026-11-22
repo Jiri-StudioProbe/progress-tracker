@@ -5,6 +5,9 @@ window.TRAINING_CONFIG = {
   weeks: 4,                // starting length; more weeks can be added in the app
   minPerTheme: 3,          // exercises needed per theme per day
 
+  // A theme with `weeklyTarget: N` isn't needed every day: it's still tracked daily, but it doesn't
+  // block a day from completing. Instead N days per week must reach the daily exercise minimum.
+
   // Where progress is saved in GitHub (see README → "Saving progress to GitHub").
   sync: {
     owner: 'Jiri-StudioProbe',
@@ -46,6 +49,7 @@ window.TRAINING_CONFIG = {
       name: 'Aggressive play',
       icon: '🔥',
       color: '#ff6b6b',
+      weeklyTarget: 3,
       exercises: [
         { id: 'king-of-the-hill', name: 'King of the hill' },
         { id: 'fifty-fifty-race', name: '50/50 race to the ball' },
@@ -57,6 +61,7 @@ window.TRAINING_CONFIG = {
       name: 'Shooting',
       icon: '🎯',
       color: '#a78bfa',
+      weeklyTarget: 3,
       exercises: [
         { id: 'technique-fundamentals', name: 'Technique fundamentals' },
         { id: 'quick-footwork-approach', name: 'Quick footwork approach' },
