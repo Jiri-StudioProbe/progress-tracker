@@ -15,8 +15,25 @@ A small, mobile-friendly web app for tracking daily football training over a 4-w
 - **Edit times** – tap the time chip next to any exercise on the Today screen (e.g. "10 min", or "+ time" if blank) to change it.
 - **Settings** – add or remove your own exercises, add extra weeks, export/import a backup, reset.
 
-Progress is stored in your browser (`localStorage`) on the device you use. Use **Settings → Export backup**
-to keep a copy or move it to another device.
+## Saving progress to GitHub
+
+Progress is kept in your browser as a cache, and (once you connect it) saved to a JSON file in this repo:
+`progress.json` on the `progress-data` branch. That branch is separate from the site, so saving never
+rebuilds GitHub Pages. If your browser data is wiped, connect again and everything comes back.
+
+**One-time setup, on each device:**
+
+1. On GitHub: **Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token**.
+2. Repository access → *Only select repositories* → `progress-tracker`.
+3. Permissions → Repository permissions → **Contents: Read and write** (nothing else).
+4. Copy the token, open the app → **Settings → GitHub sync**, paste it and press **Connect**.
+
+The app creates the `progress-data` branch the first time it saves. Changes are uploaded a couple of seconds after
+you tick something; if you're offline they're kept and uploaded later. Edits made on two devices are merged day by day
+(the most recent edit to a given day wins). The header shows whether everything is saved.
+
+Notes: the token lives only in that browser — don't use sync on a shared computer. If the repo is public,
+`progress.json` is readable by anyone. **Settings → Export backup** still downloads a copy as a file.
 
 ## Changing the plan
 

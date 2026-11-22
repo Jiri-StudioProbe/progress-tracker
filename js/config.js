@@ -5,6 +5,14 @@ window.TRAINING_CONFIG = {
   weeks: 4,                // starting length; more weeks can be added in the app
   minPerTheme: 3,          // exercises needed per theme per day
 
+  // Where progress is saved in GitHub (see README → "Saving progress to GitHub").
+  sync: {
+    owner: 'Jiri-StudioProbe',
+    repo: 'progress-tracker',
+    branch: 'progress-data', // created automatically; kept separate so saves don't rebuild the site
+    path: 'progress.json'
+  },
+
   themes: [
     {
       id: 'acceleration',

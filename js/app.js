@@ -25,9 +25,12 @@
       weeks: Number.isInteger(s.weeks) && s.weeks >= C.weeks && s.weeks <= 104 ? s.weeks : C.weeks,
       done: s.done && typeof s.done === 'object' && !Array.isArray(s.done) ? s.done : {},
       custom: s.custom && typeof s.custom === 'object' && !Array.isArray(s.custom) ? s.custom : {},
-      details: s.details && typeof s.details === 'object' && !Array.isArray(s.details) ? s.details : {}
+      details: s.details && typeof s.details === 'object' && !Array.isArray(s.details) ? s.details : {},
+      // "last edited" times (ms) used to merge changes made on different devices: 'd:<date>' and 'x:<theme>/<exercise>'
+      stamps: s.stamps && typeof s.stamps === 'object' && !Array.isArray(s.stamps) ? s.stamps : {}
     };
   }
+  const touch = (key) => { state.stamps[key] = Date.now(); };
   let saveWarned = false;
   function load() {
     try {
@@ -36,14 +39,17 @@
     } catch (e) { /* fall through to empty state */ }
     return normalize({});
   }
-  function save() {
+  // Saves to this browser (a cache) and, if GitHub sync is on, queues an upload.
+  function save(fromSync) {
     try {
       localStorage.setItem(KEY, JSON.stringify(state));
     } catch (e) {
       if (!saveWarned) { saveWarned = true; toast('Could not save in this browser (private mode?).', true); }
     }
+    if (!fromSync && sync) sync.changed();
   }
   let state = load();
+  let sync = null;
 
   const START = C.startDate;
   const endDate = () => addDays(START, state.weeks * 7 - 1);
@@ -270,8 +276,34 @@
     '<div class="row-bar"' + (color ? ' style="--c:' + color + '"' : '') + '><div class="top"><span>' + esc(label) +
     '</span><span>' + esc(right) + '</span></div><div class="bar"><i style="width:' + Math.max(0, Math.min(100, pct)) + '%"></i></div></div>';
 
+  function renderSync() {
+    const g = C.sync;
+    const where = g.owner + '/' + g.repo + ' → branch “' + g.branch + '” → ' + g.path;
+    if (sync.connected()) {
+      return '<section class="card"><h2>☁️ GitHub sync</h2>' +
+        '<p id="sync-detail" class="note"></p>' +
+        '<p class="note">Saving to ' + esc(where) + '. This device’s browser storage is only a cache.</p>' +
+        '<div class="btn-row"><button class="btn primary" data-action="sync-now">Sync now</button>' +
+        '<button class="btn" data-action="sync-disconnect">Disconnect this device</button></div></section>';
+    }
+    return '<section class="card"><h2>☁️ GitHub sync</h2>' +
+      '<p class="note">Right now your progress lives only in this browser, which can be cleared. ' +
+      'Connect GitHub to save it as <b>' + esc(g.path) + '</b> in your repo (on the <b>' + esc(g.branch) + '</b> branch) ' +
+      'and share it between your devices.</p>' +
+      '<form id="sync-form"><div class="field"><label for="sync-token">GitHub token</label>' +
+      '<input id="sync-token" type="password" autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="github_pat_…" required></div>' +
+      '<div class="btn-row"><button class="btn primary" type="submit">Connect</button></div></form>' +
+      '<details class="how"><summary>How do I get a token?</summary><ol>' +
+      '<li>On GitHub go to <b>Settings → Developer settings → Personal access tokens → Fine-grained tokens → Generate new token</b>.</li>' +
+      '<li>Name it e.g. “training tracker”, and pick an expiry (the longest you’re allowed).</li>' +
+      '<li><b>Repository access</b> → <i>Only select repositories</i> → <b>' + esc(g.repo) + '</b>.</li>' +
+      '<li><b>Permissions → Repository permissions → Contents → Read and write</b>. Nothing else is needed.</li>' +
+      '<li>Generate, copy the token, paste it above. Do this once on each device.</li></ol>' +
+      '<p class="note">The token only works for this one repo. It’s kept in this browser, so don’t use sync on a shared computer.</p></details></section>';
+  }
+
   function renderSettings() {
-    let html = '<section class="card"><h2>Add an exercise</h2>' +
+    let html = renderSync() + '<section class="card"><h2>Add an exercise</h2>' +
       '<p class="note">Aggressive play only has one exercise, so one is enough for now. Add more here to raise its target (up to ' + C.minPerTheme + '). ' +
       'New exercises count from today onward — past days are never changed.</p>' +
       '<form id="add-ex"><div class="field"><label for="ex-theme">Theme</label><select id="ex-theme">' +
@@ -301,8 +333,8 @@
       '<div class="btn-row"><button class="btn" data-action="add-week">+ Add another week</button></div></section>';
 
     html += '<section class="card"><h2>Backup</h2>' +
-      '<p class="note">Your progress is saved in this browser on this device only. Export a backup now and then, ' +
-      'or to move your progress to another phone or computer.</p>' +
+      '<p class="note">With GitHub sync on, your progress is already backed up. You can also download a copy as a file, ' +
+      'or restore from one.</p>' +
       '<div class="btn-row"><button class="btn" data-action="export">Export backup</button>' +
       '<button class="btn" data-action="import">Import backup</button>' +
       '<button class="btn danger" data-action="reset">Reset all progress</button></div></section>';
@@ -318,6 +350,7 @@
       b.classList.toggle('active', on);
       if (on) b.setAttribute('aria-current', 'page'); else b.removeAttribute('aria-current');
     });
+    if (lastSync) showSync(lastSync); // refill the status line inside freshly rendered markup
     if (focusSel) { const el = document.querySelector(focusSel); if (el) el.focus({ preventScroll: true }); }
   }
 
@@ -342,6 +375,7 @@
     if (i >= 0) arr.splice(i, 1); else arr.push(exId);
     if (!arr.length) delete day[themeId];
     if (!Object.keys(day).length) delete state.done[selected];
+    touch('d:' + selected);
     save();
     render('[data-theme="' + themeId + '"][data-ex="' + exId + '"]');
     if (!was && dayStatus(selected).complete) toast('Day complete! 💪 Great work.');
@@ -386,8 +420,7 @@
         const list = state.custom[d.theme] || [];
         const ex = list.find((x) => x.id === d.ex);
         if (ex && confirm('Remove “' + ex.name + '”? Past days are kept as they were.')) {
-          if (ex.from >= today()) state.custom[d.theme] = list.filter((x) => x !== ex);
-          else ex.until = today();
+          ex.until = today(); // soft delete, so the removal syncs and past days stay as they were
           save(); render();
         }
         break;
@@ -397,8 +430,18 @@
         break;
       case 'import': document.getElementById('import-file').click(); break;
       case 'reset':
-        if (confirm('Delete ALL progress and added exercises on this device? This cannot be undone.')) {
-          state = normalize({}); save(); render(); toast('Progress reset.');
+        if (confirm('Delete ALL progress and added exercises' + (sync && sync.connected() ? ' (also in GitHub)' : ' on this device') + '? This cannot be undone.')) {
+          state = normalize({}); save(true); render(); toast('Progress reset.');
+          if (sync) sync.force();
+        }
+        break;
+      case 'sync-now':
+        toast('Syncing…');
+        sync.now().then(() => { toast('Synced with GitHub.'); }, (err) => toast(err.message, true));
+        break;
+      case 'sync-disconnect':
+        if (confirm('Disconnect this device from GitHub? Your saved progress stays in GitHub; this device just stops syncing.')) {
+          sync.disconnect(); render();
         }
         break;
     }
@@ -413,9 +456,20 @@
       e.preventDefault();
       const f = e.target;
       state.details[detailKey(f.dataset.theme, f.dataset.ex)] = f.elements.detail.value.trim();
+      touch('x:' + detailKey(f.dataset.theme, f.dataset.ex));
       editing = null;
       save();
       render('[data-action="edit-time"][data-theme="' + f.dataset.theme + '"][data-ex="' + f.dataset.ex + '"]');
+      return;
+    }
+    if (e.target.id === 'sync-form') {
+      e.preventDefault();
+      const input = document.getElementById('sync-token');
+      const btn = e.target.querySelector('button[type=submit]');
+      btn.disabled = true; btn.textContent = 'Connecting…';
+      sync.connect(input.value).then(
+        () => { toast('Connected — progress is saved to GitHub.'); render(); },
+        (err) => { toast(err.message, true); btn.disabled = false; btn.textContent = 'Connect'; });
       return;
     }
     if (e.target.id !== 'add-ex') return;
@@ -440,19 +494,51 @@
       try {
         const data = JSON.parse(reader.result);
         if (!data || typeof data !== 'object' || typeof data.done !== 'object') throw new Error('bad file');
-        if (!confirm('Replace the progress on this device with the backup?')) return;
-        state = normalize(data); save(); render(); toast('Backup imported.');
+        if (!confirm('Replace the current progress' + (sync && sync.connected() ? ' (also in GitHub)' : '') + ' with the backup?')) return;
+        state = normalize(data); save(true); render(); toast('Backup imported.');
+        if (sync) sync.force();
       } catch (err) { toast('That file isn’t a valid backup.', true); }
     };
     reader.readAsText(file);
   });
 
+  /* ---------------- sync status ---------------- */
+  let lastSync = null;
+  function showSync(s) {
+    lastSync = s;
+    const hhmm = s.time.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit' });
+    const text = {
+      off: '⚠ Not backed up — tap to set up GitHub sync',
+      syncing: '☁️ Saving…',
+      ok: '☁️ Saved to GitHub · ' + hhmm,
+      offline: '☁️ Offline — will retry · changes kept on this device',
+      error: '⚠ Sync problem — tap for details'
+    }[s.kind];
+    const btn = document.getElementById('sync-status');
+    btn.textContent = text;
+    btn.dataset.kind = s.kind;
+    const det = document.getElementById('sync-detail');
+    if (det) det.textContent = s.kind === 'error' ? 'Problem: ' + s.message : text.replace(/^[^\w]+/, '');
+  }
+
   /* ---------------- boot ---------------- */
   document.getElementById('app-title').textContent = C.title;
+  sync = window.Sync.create({
+    cfg: C.sync,
+    getState: () => state,
+    hasData: (s) => Object.keys(s.done).length > 0 || Object.keys(s.custom).length > 0 || Object.keys(s.details).length > 0,
+    applyState: (merged) => {
+      state = normalize(merged);
+      save(true);
+      if (view !== 'settings' && !editing) render();
+    },
+    onStatus: showSync
+  });
   render();
+  sync.init();
 
   // Roll over to the new day if the page is left open overnight.
   document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') render();
+    if (document.visibilityState === 'visible' && view !== 'settings' && !editing) render();
   });
 })();

@@ -198,3 +198,15 @@ h1, h2, h3, p { margin: 0; }
 .toast.warn { background: #3a2323; color: var(--warn); border: 1px solid #5a2e2e; }
 
 @media (prefers-reduced-motion: reduce) { .toast { transition: none; } }
+
+/* ---------- sync ---------- */
+.sync-status {
+  margin-top: 6px; padding: 4px 12px; min-height: 32px; border-radius: 99px;
+  background: var(--surface); border: 1px solid var(--line);
+  font-size: .78rem; color: var(--muted); max-width: 100%; text-align: left;
+}
+.sync-status[data-kind="ok"] { color: var(--accent); }
+.sync-status[data-kind="off"], .sync-status[data-kind="error"] { color: var(--warn); border-color: #5a2e2e; }
+.how { margin-top: 14px; font-size: .9rem; }
+.how summary { cursor: pointer; color: var(--accent); font-weight: 600; min-height: 32px; }
+.how ol { padding-left: 20px; margin: 8px 0; display: grid; gap: 6px; }
