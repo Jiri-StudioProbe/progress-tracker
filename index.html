@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1410">
+  <title>Football Training Tracker</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%BD%3C/text%3E%3C/svg%3E">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <header class="app-header">
+    <div class="wrap">
+      <h1>⚽ <span id="app-title">Football Training</span></h1>
+      <p id="app-sub" class="muted"></p>
+    </div>
+  </header>
+
+  <main id="view" class="wrap" aria-live="polite"></main>
+
+  <nav class="tabs" aria-label="Sections">
+    <button class="tab" data-action="view" data-view="today"><span aria-hidden="true">📅</span>Today</button>
+    <button class="tab" data-action="view" data-view="plan"><span aria-hidden="true">🗓️</span>Plan</button>
+    <button class="tab" data-action="view" data-view="progress"><span aria-hidden="true">📈</span>Progress</button>
+    <button class="tab" data-action="view" data-view="settings"><span aria-hidden="true">⚙️</span>Settings</button>
+  </nav>
+
+  <div id="toast" class="toast" role="status"></div>
+  <input id="import-file" type="file" accept="application/json,.json" hidden>
+
+  <script src="js/config.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

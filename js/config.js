@@ -1,0 +1,58 @@
+// Training plan configuration. Edit this file to change the plan.
+window.TRAINING_CONFIG = {
+  title: 'Football Training',
+  startDate: '2026-11-23', // must be a Monday (YYYY-MM-DD)
+  weeks: 4,                // starting length; more weeks can be added in the app
+  minPerTheme: 3,          // exercises needed per theme per day
+
+  themes: [
+    {
+      id: 'acceleration',
+      name: 'Acceleration',
+      icon: '⚡',
+      color: '#ffb020',
+      exercises: [
+        { id: 'falling-starts', name: 'Falling starts' },
+        { id: 'reaction-sprints', name: 'Reaction sprints' },
+        { id: 'change-of-speed-dribbling', name: 'Change of speed dribbling' },
+        { id: 'run-on-the-spot', name: 'Run on the spot', detail: '10 min' },
+        { id: 'high-knees', name: 'High knees', detail: '5 min' },
+        { id: 'butt-kicks', name: 'Kick your bum (butt kicks)', detail: '5 min' },
+        { id: 'cone-taps', name: 'Cone taps' }
+      ]
+    },
+    {
+      id: 'stamina',
+      name: 'Stamina',
+      icon: '🫁',
+      color: '#38bdf8',
+      exercises: [
+        { id: 'laps', name: 'Laps' },
+        { id: 'slow-running', name: 'Slow running', detail: '10 min' },
+        { id: 'squats', name: 'Squats', detail: '3 min' },
+        { id: 'lunges', name: 'Lunges', detail: '5 min' }
+      ]
+    },
+    {
+      id: 'aggressive',
+      name: 'Aggressive play',
+      icon: '🔥',
+      color: '#ff6b6b',
+      exercises: [
+        { id: 'king-of-the-hill', name: 'King of the hill' }
+      ]
+    },
+    {
+      id: 'shooting',
+      name: 'Shooting',
+      icon: '🎯',
+      color: '#a78bfa',
+      exercises: [
+        { id: 'technique-fundamentals', name: 'Technique fundamentals' },
+        { id: 'quick-footwork-approach', name: 'Quick footwork approach' },
+        { id: 'touch-and-shoot', name: 'Touch and shoot' },
+        { id: 'free-kicks', name: 'Shoot at goal like free kicks' }
+      ]
+    }
+  ]
+};
