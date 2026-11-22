@@ -12,7 +12,7 @@
   function mergeStates(l, r) {
     l = l || {}; r = r || {};
     const ls = l.stamps || {}, rs = r.stamps || {};
-    const out = { weeks: Math.max(l.weeks | 0, r.weeks | 0), done: {}, custom: {}, details: {}, stamps: {} };
+    const out = { weeks: Math.max(l.weeks | 0, r.weeks | 0), done: {}, custom: {}, details: {}, stamps: {}, eggs: {} };
 
     function mergeKeyed(prefix, lMap, rMap, outMap) {
       const ids = new Set(keys(lMap).concat(keys(rMap)));
@@ -29,6 +29,9 @@
     }
     mergeKeyed('d:', l.done, r.done, out.done);
     mergeKeyed('x:', l.details, r.details, out.details);
+
+    // surprises already shown: union (a surprise shown on any device counts as shown)
+    out.eggs = Object.assign({}, r.eggs || {}, l.eggs || {});
 
     // custom exercises: union by id; a removal ("until") on either side wins
     new Set(keys(l.custom).concat(keys(r.custom))).forEach((t) => {

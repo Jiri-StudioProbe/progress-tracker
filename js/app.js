@@ -27,7 +27,9 @@
       custom: s.custom && typeof s.custom === 'object' && !Array.isArray(s.custom) ? s.custom : {},
       details: s.details && typeof s.details === 'object' && !Array.isArray(s.details) ? s.details : {},
       // "last edited" times (ms) used to merge changes made on different devices: 'd:<date>' and 'x:<theme>/<exercise>'
-      stamps: s.stamps && typeof s.stamps === 'object' && !Array.isArray(s.stamps) ? s.stamps : {}
+      stamps: s.stamps && typeof s.stamps === 'object' && !Array.isArray(s.stamps) ? s.stamps : {},
+      // surprises already shown: { 'YYYY-MM-DD': eggId } (synced, so a second device doesn't repeat them)
+      eggs: s.eggs && typeof s.eggs === 'object' && !Array.isArray(s.eggs) ? s.eggs : {}
     };
   }
   const touch = (key) => { state.stamps[key] = Date.now(); };
@@ -395,8 +397,14 @@
       '> Show the footballer collage</label></section>';
   }
 
+  function renderSurprises() {
+    return '<section class="card"><h2>🎁 Surprises</h2>' +
+      '<p class="note">Every so often, finishing a day might bring a little surprise. Turn this off if you’d rather not have them (this device only).</p>' +
+      '<label class="switch"><input type="checkbox" data-action="eggs-toggle"' + (window.Eggs.enabled() ? ' checked' : '') + '> Allow surprises</label></section>';
+  }
+
   function renderSettings() {
-    let html = renderSync() + renderBackground() + '<section class="card"><h2>Add an exercise</h2>' +
+    let html = renderSync() + renderBackground() + renderSurprises() + '<section class="card"><h2>Add an exercise</h2>' +
       '<p class="note">Each theme needs ' + C.minPerTheme + ' exercises a day (or all of them if it has fewer). ' +
       'New exercises count from today onward — past days are never changed.</p>' +
       '<form id="add-ex"><div class="field"><label for="ex-theme">Theme</label><select id="ex-theme">' +
@@ -471,7 +479,23 @@
     touch('d:' + selected);
     save();
     render('[data-theme="' + themeId + '"][data-ex="' + exId + '"]');
-    if (!was && dayStatus(selected).complete) toast('Day complete! 💪 Great work.');
+    if (!was && dayStatus(selected).complete) {
+      const fired = window.Eggs && window.Eggs.onDayComplete({
+        date: selected, today: today(), dayNum: diffDays(START, selected) + 1, shown: state.eggs,
+        mark: (d, id) => { state.eggs[d] = id; save(); }
+      });
+      if (!fired) toast('Day complete! 💪 Great work.');
+    }
+  }
+
+  // Numbers shown in the awards-ceremony surprise.
+  function eggStats() {
+    const last = lastElapsed();
+    const n = last ? diffDays(START, last) + 1 : 0;
+    let days = 0, ticks = 0;
+    for (let i = 0; i < n; i++) if (dayStatus(addDays(START, i)).complete) days++;
+    Object.keys(state.done).forEach((d) => Object.keys(state.done[d]).forEach((t) => { ticks += (state.done[d][t] || []).length; }));
+    return { days, ticks, best: streaks().best };
   }
 
   function download(name, text) {
@@ -502,6 +526,7 @@
         render('[data-action="palette"][data-palette="' + d.palette + '"]');
         break;
       case 'collage-toggle': window.Background.set({ collage: el.checked }); break;
+      case 'eggs-toggle': window.Eggs.setEnabled(el.checked); break;
       case 'view': view = d.view; window.scrollTo(0, 0); render(); break;
       case 'toggle': toggle(d.theme, d.ex); break;
       case 'goto': selected = d.date; view = 'today'; window.scrollTo(0, 0); render(); break;
@@ -624,7 +649,7 @@
   sync = window.Sync.create({
     cfg: C.sync,
     getState: () => state,
-    hasData: (s) => Object.keys(s.done).length > 0 || Object.keys(s.custom).length > 0 || Object.keys(s.details).length > 0,
+    hasData: (s) => Object.keys(s.done).length > 0 || Object.keys(s.custom).length > 0 || Object.keys(s.details).length > 0 || Object.keys(s.eggs || {}).length > 0,
     applyState: (merged) => {
       state = normalize(merged);
       save(true);
@@ -632,8 +657,10 @@
     },
     onStatus: showSync
   });
+  window.Eggs.configure({ stats: eggStats });
   render();
   sync.init();
+  window.Eggs.previewFromUrl();
 
   // Roll over to the new day if the page is left open overnight.
   document.addEventListener('visibilitychange', () => {

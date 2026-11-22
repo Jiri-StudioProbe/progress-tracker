@@ -47,6 +47,26 @@ has 7 colours and a switch to turn the collage off; the choice is remembered on 
 The boxes (cards, exercise rows, tick squares, calendar days, buttons) are white on every colour except Graphite, where they are black.
 To change who appears, edit the `collage` list in `js/config.js`.
 
+## Surprises (spoilers!)
+
+Finishing a day can trigger a little surprise (`js/eggs.js`, `css/eggs.css`):
+
+| When | Surprise (`?egg=` id) |
+| --- | --- |
+| Day 2 | `var` – a painfully serious video review of your tick |
+| Day 4 | `keepy` – a keepy-uppy mini-game |
+| Day 5 | `crash` – a fake "legs not found" error (a prank, progress is safe) |
+| Day 7 | `ceremony` – an awards ceremony with your real numbers and an acceptance speech |
+| After day 7, on about half of the days, at random | `redcard`, `invader`, `flip`, `gaffer`, `banana`, `fortune` |
+
+- A surprise shows when the day's daily themes are completed **on that day** (not when back-filling an old day).
+- One a day at most. If a scripted day is missed, its surprise arrives on the next day you complete.
+- Which surprises have been shown is saved with your progress (and synced), so a second device won't repeat one.
+- Every surprise has a close button and closes with Escape. **Settings → Surprises** turns them off on that device.
+- Respects "reduce motion": the motion-heavy ones become simple static cards.
+- **Preview one:** add `?egg=<id>` to the page address, e.g. `https://…/progress-tracker/?egg=keepy`
+  (or `?egg=random`). Previews don't count as shown.
+
 ## Changing the plan
 
 Edit `js/config.js` — start date (must be a Monday), number of weeks, the minimum per theme,
