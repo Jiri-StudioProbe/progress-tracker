@@ -24,7 +24,8 @@
     return {
       weeks: Number.isInteger(s.weeks) && s.weeks >= C.weeks && s.weeks <= 104 ? s.weeks : C.weeks,
       done: s.done && typeof s.done === 'object' && !Array.isArray(s.done) ? s.done : {},
-      custom: s.custom && typeof s.custom === 'object' && !Array.isArray(s.custom) ? s.custom : {}
+      custom: s.custom && typeof s.custom === 'object' && !Array.isArray(s.custom) ? s.custom : {},
+      details: s.details && typeof s.details === 'object' && !Array.isArray(s.details) ? s.details : {}
     };
   }
   let saveWarned = false;
@@ -54,6 +55,12 @@
   function exercisesOn(theme, date) {
     const extra = (state.custom[theme.id] || []).filter((e) => e.from <= date && (!e.until || date < e.until));
     return theme.exercises.concat(extra);
+  }
+  // The time/detail shown against an exercise: the user's edit if there is one, else the default.
+  const detailKey = (themeId, exId) => themeId + '/' + exId;
+  function detailOf(themeId, ex) {
+    const k = detailKey(themeId, ex.id);
+    return Object.prototype.hasOwnProperty.call(state.details, k) ? String(state.details[k]) : (ex.detail || '');
   }
   function themeStatus(date, theme) {
     const avail = exercisesOn(theme, date);
@@ -89,6 +96,7 @@
 
   /* ---------------- view state ---------------- */
   let view = 'today';
+  let editing = null; // 'themeId/exId' while a time is being edited
   let selected = (function () {
     const t = today(), e = endDate();
     return t < START ? START : t > e ? e : t;
@@ -141,10 +149,21 @@
         '<div class="ex-list">';
       ts.avail.forEach((ex) => {
         const on = ts.ticked.indexOf(ex.id) >= 0;
-        html += '<button class="ex" data-action="toggle" data-theme="' + esc(theme.id) + '" data-ex="' + esc(ex.id) +
-          '" aria-pressed="' + on + '"><span class="box" aria-hidden="true">✓</span>' +
-          '<span class="label">' + esc(ex.name) + '</span>' +
-          (ex.detail ? '<span class="detail">' + esc(ex.detail) + '</span>' : '') + '</button>';
+        const detail = detailOf(theme.id, ex);
+        const ids = 'data-theme="' + esc(theme.id) + '" data-ex="' + esc(ex.id) + '"';
+        html += '<div class="ex-wrap"><div class="ex-row">' +
+          '<button class="ex" data-action="toggle" ' + ids + ' aria-pressed="' + on + '">' +
+          '<span class="box" aria-hidden="true">✓</span><span class="label">' + esc(ex.name) + '</span></button>' +
+          '<button class="time' + (detail ? '' : ' empty') + '" data-action="edit-time" ' + ids +
+          ' aria-label="Edit time for ' + esc(ex.name) + '">' + (detail ? esc(detail) : '+ time') + '</button></div>';
+        if (editing === detailKey(theme.id, ex.id)) {
+          html += '<form class="time-form" ' + ids + '>' +
+            '<input name="detail" value="' + esc(detail) + '" maxlength="20" placeholder="e.g. 10 min" ' +
+            'aria-label="Time for ' + esc(ex.name) + '" autocomplete="off">' +
+            '<button class="btn primary" type="submit">Save</button>' +
+            '<button class="btn" type="button" data-action="cancel-time">Cancel</button></form>';
+        }
+        html += '</div>';
       });
       html += '</div></section>';
     });
@@ -270,7 +289,8 @@
     if (items.length) {
       html += '<h2 style="margin-top:18px">Your added exercises</h2>';
       items.forEach((x) => {
-        html += '<div class="custom-item"><div class="grow">' + esc(x.e.name) + (x.e.detail ? ' · ' + esc(x.e.detail) : '') +
+        const dd = detailOf(x.th.id, x.e);
+        html += '<div class="custom-item"><div class="grow">' + esc(x.e.name) + (dd ? ' · ' + esc(dd) : '') +
           '<small>' + esc(x.th.name) + '</small></div><button class="btn danger" data-action="remove-ex" data-theme="' +
           esc(x.th.id) + '" data-ex="' + esc(x.e.id) + '">Remove</button></div>';
       });
@@ -339,7 +359,17 @@
     const el = e.target.closest('[data-action]');
     if (!el) return;
     const d = el.dataset;
+    if (d.action !== 'toggle' && d.action !== 'edit-time') editing = null;
     switch (d.action) {
+      case 'edit-time': {
+        const k = detailKey(d.theme, d.ex);
+        editing = editing === k ? null : k;
+        render(editing ? '.time-form input' : '[data-action="edit-time"][data-theme="' + d.theme + '"][data-ex="' + d.ex + '"]');
+        const inp = document.querySelector('.time-form input');
+        if (inp) { inp.select(); inp.scrollIntoView({ block: 'center' }); }
+        break;
+      }
+      case 'cancel-time': render(); break;
       case 'view': view = d.view; window.scrollTo(0, 0); render(); break;
       case 'toggle': toggle(d.theme, d.ex); break;
       case 'goto': selected = d.date; view = 'today'; window.scrollTo(0, 0); render(); break;
@@ -374,7 +404,20 @@
     }
   });
 
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && editing) { editing = null; render(); }
+  });
+
   document.addEventListener('submit', (e) => {
+    if (e.target.classList.contains('time-form')) {
+      e.preventDefault();
+      const f = e.target;
+      state.details[detailKey(f.dataset.theme, f.dataset.ex)] = f.elements.detail.value.trim();
+      editing = null;
+      save();
+      render('[data-action="edit-time"][data-theme="' + f.dataset.theme + '"][data-ex="' + f.dataset.ex + '"]');
+      return;
+    }
     if (e.target.id !== 'add-ex') return;
     e.preventDefault();
     const themeId = document.getElementById('ex-theme').value;

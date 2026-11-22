@@ -12,6 +12,7 @@ A small, mobile-friendly web app for tracking daily football training over a 4-w
 - **Today** – tick exercises, step between days. Future days are locked.
 - **Plan** – 4-week calendar showing complete / missed / upcoming days.
 - **Progress** – days completed, streaks, per-theme and weekly stats, exercise log.
+- **Edit times** – tap the time chip next to any exercise on the Today screen (e.g. "10 min", or "+ time" if blank) to change it.
 - **Settings** – add or remove your own exercises, add extra weeks, export/import a backup, reset.
 
 Progress is stored in your browser (`localStorage`) on the device you use. Use **Settings → Export backup**
