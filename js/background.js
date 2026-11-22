@@ -4,16 +4,23 @@
 (function (root) {
   'use strict';
 
-  /* ---------- palettes (all dark, so the text colours stay the same) ---------- */
+  /* ---------- palettes ---------- */
+  // The page background is dark; the "boxes" (cards, rows, tiles, buttons) are white, or black on Graphite.
+  const BOXES = {
+    white: { surface: '#ffffff', surface2: '#f1f3f5', line: '#c5cbd3', edge: '#6b7683', text: '#14181c', muted: '#55606b', warn: '#b42318', mix: '45%' },
+    black: { surface: '#000000', surface2: '#161616', line: '#3d3d3d', edge: '#7c7c7c', text: '#f2f2f2', muted: '#a9a9a9', warn: '#ff8a8a', mix: '0%' }
+  };
   const PALETTES = [
-    { id: 'pitch',    name: 'Pitch',    bg: '#0b1410', surface: '#13211a', surface2: '#1b2e24', line: '#2a4235', muted: '#94ab9f', accent: '#3ddc84' },
-    { id: 'midnight', name: 'Midnight', bg: '#0a1220', surface: '#111d33', surface2: '#192a47', line: '#2a4066', muted: '#93a5c4', accent: '#4da3ff' },
-    { id: 'crimson',  name: 'Crimson',  bg: '#1a0b0e', surface: '#2a1318', surface2: '#3a1c23', line: '#5a2e38', muted: '#c4a0a6', accent: '#ff6b81' },
-    { id: 'purple',   name: 'Purple',   bg: '#130d20', surface: '#1e1633', surface2: '#2a2047', line: '#44366b', muted: '#aa9fc9', accent: '#b794ff' },
-    { id: 'sunset',   name: 'Sunset',   bg: '#1c1008', surface: '#2b1a0d', surface2: '#3b2512', line: '#5e3d20', muted: '#c9ab8f', accent: '#ffa94d' },
-    { id: 'teal',     name: 'Teal',     bg: '#071a1a', surface: '#0e2a2a', surface2: '#153a3a', line: '#245555', muted: '#8fbdb9', accent: '#2dd4bf' },
-    { id: 'graphite', name: 'Graphite', bg: '#0c0c0c', surface: '#181818', surface2: '#222222', line: '#3a3a3a', muted: '#a3a3a3', accent: '#e5e5e5' }
+    { id: 'pitch',    name: 'Pitch',    bg: '#0b1410', muted: '#94ab9f', accent: '#3ddc84', boxes: 'white' },
+    { id: 'midnight', name: 'Midnight', bg: '#0a1220', muted: '#93a5c4', accent: '#4da3ff', boxes: 'white' },
+    { id: 'crimson',  name: 'Crimson',  bg: '#1a0b0e', muted: '#c4a0a6', accent: '#ff6b81', boxes: 'white' },
+    { id: 'purple',   name: 'Purple',   bg: '#130d20', muted: '#aa9fc9', accent: '#b794ff', boxes: 'white' },
+    { id: 'sunset',   name: 'Sunset',   bg: '#1c1008', muted: '#c9ab8f', accent: '#ffa94d', boxes: 'white' },
+    { id: 'teal',     name: 'Teal',     bg: '#071a1a', muted: '#8fbdb9', accent: '#2dd4bf', boxes: 'white' },
+    // lighter page grey so the black boxes stand out from it
+    { id: 'graphite', name: 'Graphite', bg: '#565b61', muted: '#dcdfe2', accent: '#e5e5e5', boxes: 'black' }
   ];
+  PALETTES.forEach((p) => { p.box = BOXES[p.boxes].surface; });
 
   const KEY = 'footballTracker.bg';
   const DEFAULTS = { palette: 'pitch', collage: true };
@@ -34,14 +41,11 @@
   const paletteOf = (id) => PALETTES.find((p) => p.id === id) || PALETTES[0];
 
   function applyPalette() {
-    const p = paletteOf(prefs.palette), s = root.document.documentElement.style;
-    s.setProperty('--bg', p.bg);
-    s.setProperty('--surface', p.surface);
-    s.setProperty('--surface-2', p.surface2);
-    s.setProperty('--line', p.line);
-    s.setProperty('--muted', p.muted);
-    s.setProperty('--accent', p.accent);
-    s.setProperty('--accent-ink', p.bg);
+    const p = paletteOf(prefs.palette), b = BOXES[p.boxes], st = root.document.documentElement.style;
+    const set = (k, v) => st.setProperty(k, v);
+    set('--bg', p.bg); set('--muted', p.muted); set('--accent', p.accent); set('--accent-ink', '#0a0d0c');
+    set('--surface', b.surface); set('--surface-2', b.surface2); set('--line', b.line); set('--box-edge', b.edge);
+    set('--box-text', b.text); set('--box-muted', b.muted); set('--box-warn', b.warn); set('--box-mix', b.mix);
     const meta = root.document.querySelector('meta[name="theme-color"]');
     if (meta) meta.setAttribute('content', p.bg);
   }
@@ -116,7 +120,7 @@
     applyPalette();
     renderCollage();
   }
-  const api = { palettes: PALETTES, poses: POSES, get: () => Object.assign({}, prefs), set, renderCollage };
+  const api = { palettes: PALETTES, boxes: BOXES, poses: POSES, get: () => Object.assign({}, prefs), set, renderCollage };
 
   if (typeof module !== 'undefined' && module.exports) { module.exports = api; return; }
   root.Background = api;

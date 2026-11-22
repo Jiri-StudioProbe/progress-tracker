@@ -44,6 +44,7 @@ Notes: the token lives only in that browser — don't use sync on a shared compu
 The page background is a collage of football legends — stylised silhouettes with each player's name and shirt number,
 drawn in code (`js/background.js`), so there are no image files or photo licences involved. **Settings → Background**
 has 7 colours and a switch to turn the collage off; the choice is remembered on that device.
+The boxes (cards, exercise rows, tick squares, calendar days, buttons) are white on every colour except Graphite, where they are black.
 To change who appears, edit the `collage` list in `js/config.js`.
 
 ## Changing the plan

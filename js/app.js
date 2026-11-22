@@ -316,7 +316,7 @@
     if (weeklyThemes.length) {
       html += '<section class="card"><h2>Weekly targets</h2><p class="muted" style="font-size:.85rem">Days per week reaching the minimum, against each target</p>';
       weeklyThemes.forEach((th) => {
-        html += '<div class="theme-title" style="color:' + th.color + '"><span aria-hidden="true">' + th.icon + '</span>' + esc(th.name) +
+        html += '<div class="theme-title" style="--c:' + th.color + '"><span aria-hidden="true">' + th.icon + '</span>' + esc(th.name) +
           ' · ' + Math.min(th.weeklyTarget, 7) + ' days a week</div><div class="wk-chips" style="margin-top:8px">';
         for (let w = 0; w < weeksStarted; w++) {
           const tw = themeWeek(th, w);
@@ -341,7 +341,7 @@
     html += '<section class="card"><h2>Exercise log</h2><p class="muted" style="font-size:.85rem">How many times you’ve done each one</p>';
     C.themes.forEach((th) => {
       const all = th.exercises.concat(state.custom[th.id] || []);
-      html += '<div class="theme-title" style="color:' + th.color + '"><span aria-hidden="true">' + th.icon + '</span>' + esc(th.name) + '</div><div class="ex-counts">';
+      html += '<div class="theme-title" style="--c:' + th.color + '"><span aria-hidden="true">' + th.icon + '</span>' + esc(th.name) + '</div><div class="ex-counts">';
       all.forEach((ex) => {
         html += '<div><span>' + esc(ex.name) + '</span><span>' + (counts[th.id + '/' + ex.id] || 0) + '×</span></div>';
       });
@@ -389,7 +389,7 @@
       '<div class="swatches" role="group" aria-label="Background colour">' +
       window.Background.palettes.map((p) =>
         '<button class="swatch" data-action="palette" data-palette="' + p.id + '" aria-pressed="' + (pref.palette === p.id) + '" ' +
-        'style="--s1:' + p.bg + ';--s2:' + p.accent + '"><i></i>' + esc(p.name) + '</button>').join('') +
+        'style="--s1:' + p.bg + ';--s2:' + p.accent + ';--s3:' + p.box + '"><i></i>' + esc(p.name) + '</button>').join('') +
       '</div>' +
       '<label class="switch"><input type="checkbox" data-action="collage-toggle"' + (pref.collage ? ' checked' : '') +
       '> Show the footballer collage</label></section>';
