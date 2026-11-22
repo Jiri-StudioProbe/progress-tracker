@@ -381,8 +381,22 @@
       '<p class="note">The token only works for this one repo. It’s kept in this browser, so don’t use sync on a shared computer.</p></details></section>';
   }
 
+  function renderBackground() {
+    const pref = window.Background.get();
+    return '<section class="card"><h2>🎨 Background</h2>' +
+      '<p class="note">Pick a colour for the page. The collage shows football legends as silhouettes with their shirt numbers. ' +
+      'This is saved on this device only.</p>' +
+      '<div class="swatches" role="group" aria-label="Background colour">' +
+      window.Background.palettes.map((p) =>
+        '<button class="swatch" data-action="palette" data-palette="' + p.id + '" aria-pressed="' + (pref.palette === p.id) + '" ' +
+        'style="--s1:' + p.bg + ';--s2:' + p.accent + '"><i></i>' + esc(p.name) + '</button>').join('') +
+      '</div>' +
+      '<label class="switch"><input type="checkbox" data-action="collage-toggle"' + (pref.collage ? ' checked' : '') +
+      '> Show the footballer collage</label></section>';
+  }
+
   function renderSettings() {
-    let html = renderSync() + '<section class="card"><h2>Add an exercise</h2>' +
+    let html = renderSync() + renderBackground() + '<section class="card"><h2>Add an exercise</h2>' +
       '<p class="note">Each theme needs ' + C.minPerTheme + ' exercises a day (or all of them if it has fewer). ' +
       'New exercises count from today onward — past days are never changed.</p>' +
       '<form id="add-ex"><div class="field"><label for="ex-theme">Theme</label><select id="ex-theme">' +
@@ -483,6 +497,11 @@
         break;
       }
       case 'cancel-time': render(); break;
+      case 'palette':
+        window.Background.set({ palette: d.palette });
+        render('[data-action="palette"][data-palette="' + d.palette + '"]');
+        break;
+      case 'collage-toggle': window.Background.set({ collage: el.checked }); break;
       case 'view': view = d.view; window.scrollTo(0, 0); render(); break;
       case 'toggle': toggle(d.theme, d.ex); break;
       case 'goto': selected = d.date; view = 'today'; window.scrollTo(0, 0); render(); break;

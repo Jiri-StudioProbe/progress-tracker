@@ -10,6 +10,7 @@
   --warn: #ff8a8a;
   --radius: 16px;
   --tabs-h: 64px;
+  --glass: color-mix(in srgb, var(--surface) 86%, transparent);
 }
 
 * { box-sizing: border-box; }
@@ -21,6 +22,17 @@ body {
   font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
   padding-bottom: calc(var(--tabs-h) + env(safe-area-inset-bottom) + 24px);
 }
+/* background collage: fixed behind everything, tinted by the current accent colour */
+.bg {
+  position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden;
+  color: var(--accent);
+}
+.bg::after { /* keep the header area calm and fade the collage towards the bottom bar */
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(to bottom, var(--bg) 0, color-mix(in srgb, var(--bg) 55%, transparent) 30%, transparent 55%, transparent 72%, var(--bg) 100%);
+  opacity: .9;
+}
+.bg svg { display: block; opacity: .72; }
 button, input, select { font: inherit; color: inherit; }
 button { cursor: pointer; -webkit-tap-highlight-color: transparent; }
 button:focus-visible, input:focus-visible, select:focus-visible {
@@ -52,7 +64,7 @@ h1, h2, h3, p { margin: 0; }
 
 /* ---------- shared bits ---------- */
 .card {
-  background: var(--surface); border: 1px solid var(--line);
+  background: var(--glass); border: 1px solid var(--line);
   border-radius: var(--radius); padding: 16px; margin-top: 14px;
 }
 .card h2 { font-size: 1.05rem; margin-bottom: 4px; }
@@ -77,7 +89,7 @@ h1, h2, h3, p { margin: 0; }
 .day-nav .title span { font-size: .85rem; color: var(--muted); }
 .icon-btn {
   width: 44px; height: 44px; border-radius: 12px; font-size: 1.2rem;
-  background: var(--surface); border: 1px solid var(--line);
+  background: var(--glass); border: 1px solid var(--line);
 }
 .icon-btn:disabled { opacity: .35; cursor: default; }
 .day-summary { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-top: 12px; }
@@ -137,7 +149,7 @@ h1, h2, h3, p { margin: 0; }
 .tile {
   min-width: 0;
   position: relative; aspect-ratio: 1 / 1.15; border-radius: 12px; padding: 4px 2px;
-  background: var(--surface); border: 1px solid var(--line);
+  background: var(--glass); border: 1px solid var(--line);
   display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 4px;
 }
 .tile .dnum { font-weight: 700; font-size: 1rem; }
@@ -145,7 +157,7 @@ h1, h2, h3, p { margin: 0; }
 .dots { display: grid; grid-template-columns: repeat(2, 7px); gap: 3px; }
 .dots i { width: 7px; height: 7px; border-radius: 50%; background: var(--surface-2); border: 1px solid var(--line); }
 .dots i.on { background: var(--c); border-color: var(--c); }
-.tile.complete { background: #174a2e; border-color: var(--accent); }
+.tile.complete { background: color-mix(in srgb, var(--accent) 24%, var(--surface)); border-color: var(--accent); }
 .tile.complete .dnum::after { content: " ✓"; color: var(--accent); font-size: .75rem; }
 .tile.missed { border-color: #5a2e2e; }
 .tile.future { opacity: .55; }
@@ -155,7 +167,7 @@ h1, h2, h3, p { margin: 0; }
 
 /* ---------- progress ---------- */
 .stats { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; margin-top: 14px; }
-.stat { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; }
+.stat { background: var(--glass); border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; }
 .stat strong { display: block; font-size: 1.7rem; line-height: 1.1; }
 .stat span { font-size: .8rem; color: var(--muted); }
 .row-bar { margin-top: 12px; }
@@ -228,3 +240,17 @@ h1, h2, h3, p { margin: 0; }
 .chip.met { background: var(--c); border-color: var(--c); color: #0b1410; }
 .chip.open { border-color: var(--c); color: var(--c); }
 .chip.missed { border-color: #5a2e2e; color: var(--warn); }
+
+/* ---------- background settings ---------- */
+.swatches { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 12px; }
+.swatch {
+  display: grid; justify-items: center; gap: 6px; padding: 8px 2px; border-radius: 12px;
+  background: none; border: 2px solid transparent; font-size: .75rem; color: var(--muted);
+}
+.swatch i {
+  width: 44px; height: 44px; border-radius: 50%; border: 2px solid var(--line);
+  background: linear-gradient(135deg, var(--s1) 0 50%, var(--s2) 50% 100%);
+}
+.swatch[aria-pressed="true"] { border-color: var(--accent); color: var(--text); font-weight: 700; }
+.switch { display: flex; align-items: center; gap: 12px; margin-top: 14px; min-height: 44px; }
+.switch input { width: 22px; height: 22px; accent-color: var(--accent); }

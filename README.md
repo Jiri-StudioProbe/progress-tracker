@@ -17,7 +17,7 @@ A small, mobile-friendly web app for tracking daily football training over a 4-w
 - **Plan** – 4-week calendar showing complete / missed / upcoming days.
 - **Progress** – days completed, streaks, weekly targets hit, per-theme and weekly stats, exercise log.
 - **Edit times** – tap the time chip next to any exercise on the Today screen (e.g. "10 min", or "+ time" if blank) to change it.
-- **Settings** – add or remove your own exercises, add extra weeks, export/import a backup, reset.
+- **Settings** – pick the page colour and toggle the footballer collage, add or remove your own exercises, add extra weeks, export/import a backup, reset.
 
 ## Saving progress to GitHub
 
@@ -38,6 +38,13 @@ you tick something; if you're offline they're kept and uploaded later. Edits mad
 
 Notes: the token lives only in that browser — don't use sync on a shared computer. If the repo is public,
 `progress.json` is readable by anyone. **Settings → Export backup** still downloads a copy as a file.
+
+## Background
+
+The page background is a collage of football legends — stylised silhouettes with each player's name and shirt number,
+drawn in code (`js/background.js`), so there are no image files or photo licences involved. **Settings → Background**
+has 7 colours and a switch to turn the collage off; the choice is remembered on that device.
+To change who appears, edit the `collage` list in `js/config.js`.
 
 ## Changing the plan
 

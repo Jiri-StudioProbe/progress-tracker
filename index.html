@@ -7,8 +7,11 @@
   <title>Football Training Tracker</title>
   <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%E2%9A%BD%3C/text%3E%3C/svg%3E">
   <link rel="stylesheet" href="css/style.css">
+  <script src="js/config.js"></script>
+  <script src="js/background.js"></script>
 </head>
 <body>
+  <div id="bg" class="bg" aria-hidden="true"></div>
   <header class="app-header">
     <div class="wrap">
       <h1>⚽ <span id="app-title">Football Training</span></h1>
@@ -29,7 +32,6 @@
   <div id="toast" class="toast" role="status"></div>
   <input id="import-file" type="file" accept="application/json,.json" hidden>
 
-  <script src="js/config.js"></script>
   <script src="js/sync.js"></script>
   <script src="js/app.js"></script>
 </body>

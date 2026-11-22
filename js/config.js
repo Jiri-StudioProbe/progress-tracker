@@ -8,6 +8,21 @@ window.TRAINING_CONFIG = {
   // A theme with `weeklyTarget: N` isn't needed every day: it's still tracked daily, but it doesn't
   // block a day from completing. Instead N days per week must reach the daily exercise minimum.
 
+  // Football legends shown in the background collage (name + shirt number; drawn as silhouettes).
+  collage: [
+    { name: 'Ronaldo', number: 7 },
+    { name: 'Ronaldinho', number: 10 },
+    { name: 'Pelé', number: 10 },
+    { name: 'Haaland', number: 9 },
+    { name: 'Messi', number: 10 },
+    { name: 'Maradona', number: 10 },
+    { name: 'Mbappé', number: 10 },
+    { name: 'Cruyff', number: 14 },
+    { name: 'Zidane', number: 10 },
+    { name: 'Beckham', number: 7 },
+    { name: 'Henry', number: 14 }
+  ],
+
   // Where progress is saved in GitHub (see README → "Saving progress to GitHub").
   sync: {
     owner: 'Jiri-StudioProbe',
