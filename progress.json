@@ -1,14 +1,20 @@
 {
   "version": 1,
   "weeks": 4,
-  "done": {},
+  "done": {
+    "2026-11-23": {
+      "acceleration": [
+        "run-on-the-spot"
+      ]
+    }
+  },
   "custom": {},
   "details": {
-    "acceleration/run-on-the-spot": "3"
+    "acceleration/run-on-the-spot": "3 min"
   },
   "stamps": {
-    "d:2026-11-23": 1795448040798,
-    "x:acceleration/run-on-the-spot": 1795448063837
+    "d:2026-11-23": 1795448289251,
+    "x:acceleration/run-on-the-spot": 1795448286829
   },
   "eggs": {}
 }
