@@ -10,7 +10,8 @@
       ],
       "shooting": [
         "free-kicks",
-        "touch-and-shoot"
+        "touch-and-shoot",
+        "technique-fundamentals"
       ]
     }
   },
@@ -36,7 +37,7 @@
     "acceleration/cone-taps": "1 min"
   },
   "stamps": {
-    "d:2026-11-23": 1795449469395,
+    "d:2026-11-23": 1795449472870,
     "x:acceleration/run-on-the-spot": 1795448286829,
     "x:acceleration/butt-kicks": 1795448444861,
     "x:acceleration/cone-taps": 1795448789920
