@@ -4,11 +4,11 @@
   "done": {},
   "custom": {},
   "details": {
-    "acceleration/run-on-the-spot": ""
+    "acceleration/run-on-the-spot": "3"
   },
   "stamps": {
     "d:2026-11-23": 1795448040798,
-    "x:acceleration/run-on-the-spot": 1795448058461
+    "x:acceleration/run-on-the-spot": 1795448063837
   },
   "eggs": {}
 }
