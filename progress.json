@@ -8,7 +8,16 @@
       ]
     }
   },
-  "custom": {},
+  "custom": {
+    "stamina": [
+      {
+        "id": "cmwtfmlyo0",
+        "name": "jumps over a hurdle",
+        "detail": "45",
+        "from": "2026-11-23"
+      }
+    ]
+  },
   "details": {
     "acceleration/run-on-the-spot": "3 min"
   },
