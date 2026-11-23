@@ -4,7 +4,8 @@
   "done": {
     "2026-11-23": {
       "acceleration": [
-        "run-on-the-spot"
+        "run-on-the-spot",
+        "butt-kicks"
       ]
     }
   },
@@ -23,7 +24,7 @@
     "acceleration/butt-kicks": "1 min"
   },
   "stamps": {
-    "d:2026-11-23": 1795448289251,
+    "d:2026-11-23": 1795448530067,
     "x:acceleration/run-on-the-spot": 1795448286829,
     "x:acceleration/butt-kicks": 1795448444861
   },
