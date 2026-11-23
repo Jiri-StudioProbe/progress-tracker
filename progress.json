@@ -5,7 +5,8 @@
     "2026-11-23": {
       "acceleration": [
         "run-on-the-spot",
-        "butt-kicks"
+        "butt-kicks",
+        "cone-taps"
       ]
     }
   },
@@ -27,12 +28,14 @@
   },
   "details": {
     "acceleration/run-on-the-spot": "3 min",
-    "acceleration/butt-kicks": "1 min"
+    "acceleration/butt-kicks": "1 min",
+    "acceleration/cone-taps": "1 min"
   },
   "stamps": {
-    "d:2026-11-23": 1795448530067,
+    "d:2026-11-23": 1795448791687,
     "x:acceleration/run-on-the-spot": 1795448286829,
-    "x:acceleration/butt-kicks": 1795448444861
+    "x:acceleration/butt-kicks": 1795448444861,
+    "x:acceleration/cone-taps": 1795448789920
   },
   "eggs": {}
 }
