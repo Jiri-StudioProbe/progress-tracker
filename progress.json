@@ -19,11 +19,13 @@
     ]
   },
   "details": {
-    "acceleration/run-on-the-spot": "3 min"
+    "acceleration/run-on-the-spot": "3 min",
+    "acceleration/butt-kicks": "1"
   },
   "stamps": {
     "d:2026-11-23": 1795448289251,
-    "x:acceleration/run-on-the-spot": 1795448286829
+    "x:acceleration/run-on-the-spot": 1795448286829,
+    "x:acceleration/butt-kicks": 1795448436140
   },
   "eggs": {}
 }
