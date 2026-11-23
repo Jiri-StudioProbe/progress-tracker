@@ -1,0 +1,19 @@
+{
+  "version": 1,
+  "weeks": 4,
+  "done": {
+    "2026-11-23": {
+      "acceleration": [
+        "falling-starts",
+        "reaction-sprints",
+        "change-of-speed-dribbling"
+      ]
+    }
+  },
+  "custom": {},
+  "details": {},
+  "stamps": {
+    "d:2026-11-23": 1795448030151
+  },
+  "eggs": {}
+}
