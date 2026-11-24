@@ -17,6 +17,9 @@
         "squats",
         "lunges",
         "cmwtfmlyo0"
+      ],
+      "aggressive": [
+        "shielding-practice"
       ]
     },
     "2026-11-24": {
@@ -69,7 +72,7 @@
     "stamina/slow-running": "5 min"
   },
   "stamps": {
-    "d:2026-11-23": 1795450320989,
+    "d:2026-11-23": 1795542511818,
     "d:2026-11-24": 1795542480473,
     "x:acceleration/run-on-the-spot": 1795448286829,
     "x:acceleration/butt-kicks": 1795448444861,
