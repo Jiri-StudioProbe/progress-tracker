@@ -29,6 +29,9 @@
         "butt-kicks",
         "cone-taps",
         "falling-starts"
+      ],
+      "stamina": [
+        "lunges"
       ]
     }
   },
@@ -58,11 +61,12 @@
     "shooting/technique-fundamentals": "2 min",
     "stamina/cmwtfmlyo0": "45 seconds",
     "acceleration/high-knees": "3 min",
-    "acceleration/falling-starts": "8 times"
+    "acceleration/falling-starts": "8 times",
+    "stamina/lunges": "3 min"
   },
   "stamps": {
     "d:2026-11-23": 1795450320989,
-    "d:2026-11-24": 1795538434879,
+    "d:2026-11-24": 1795538641317,
     "x:acceleration/run-on-the-spot": 1795448286829,
     "x:acceleration/butt-kicks": 1795448444861,
     "x:acceleration/cone-taps": 1795448789920,
@@ -71,7 +75,8 @@
     "x:shooting/technique-fundamentals": 1795537967506,
     "x:stamina/cmwtfmlyo0": 1795537988194,
     "x:acceleration/high-knees": 1795538205134,
-    "x:acceleration/falling-starts": 1795538444055
+    "x:acceleration/falling-starts": 1795538444055,
+    "x:stamina/lunges": 1795538639479
   },
   "eggs": {}
 }
