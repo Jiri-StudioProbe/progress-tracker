@@ -63,7 +63,8 @@
     "stamina/cmwtfmlyo0": "45 seconds",
     "acceleration/high-knees": "3 min",
     "acceleration/falling-starts": "8 times",
-    "stamina/lunges": "3 min"
+    "stamina/lunges": "3 min",
+    "aggressive/shielding-practice": "30minshieldingschool"
   },
   "stamps": {
     "d:2026-11-23": 1795450320989,
@@ -77,7 +78,8 @@
     "x:stamina/cmwtfmlyo0": 1795537988194,
     "x:acceleration/high-knees": 1795538205134,
     "x:acceleration/falling-starts": 1795538444055,
-    "x:stamina/lunges": 1795538639479
+    "x:stamina/lunges": 1795538639479,
+    "x:aggressive/shielding-practice": 1795538907754
   },
   "eggs": {}
 }
