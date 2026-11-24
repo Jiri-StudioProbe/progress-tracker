@@ -34,9 +34,6 @@
         "lunges",
         "cmwtfmlyo0",
         "slow-running"
-      ],
-      "aggressive": [
-        "shielding-practice"
       ]
     }
   },
@@ -73,7 +70,7 @@
   },
   "stamps": {
     "d:2026-11-23": 1795450320989,
-    "d:2026-11-24": 1795539180138,
+    "d:2026-11-24": 1795542480473,
     "x:acceleration/run-on-the-spot": 1795448286829,
     "x:acceleration/butt-kicks": 1795448444861,
     "x:acceleration/cone-taps": 1795448789920,
