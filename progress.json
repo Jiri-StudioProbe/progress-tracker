@@ -57,7 +57,8 @@
     "shooting/touch-and-shoot": "3 min",
     "shooting/technique-fundamentals": "2 min",
     "stamina/cmwtfmlyo0": "45 seconds",
-    "acceleration/high-knees": "3 min"
+    "acceleration/high-knees": "3 min",
+    "acceleration/falling-starts": "8 times"
   },
   "stamps": {
     "d:2026-11-23": 1795450320989,
@@ -69,7 +70,8 @@
     "x:shooting/touch-and-shoot": 1795537960823,
     "x:shooting/technique-fundamentals": 1795537967506,
     "x:stamina/cmwtfmlyo0": 1795537988194,
-    "x:acceleration/high-knees": 1795538205134
+    "x:acceleration/high-knees": 1795538205134,
+    "x:acceleration/falling-starts": 1795538444055
   },
   "eggs": {}
 }
