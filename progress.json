@@ -50,7 +50,8 @@
     "acceleration/cone-taps": "1 min",
     "shooting/free-kicks": "5 min",
     "shooting/touch-and-shoot": "3 min",
-    "shooting/technique-fundamentals": "2 min"
+    "shooting/technique-fundamentals": "2 min",
+    "stamina/cmwtfmlyo0": "45 seconds"
   },
   "stamps": {
     "d:2026-11-23": 1795450320989,
@@ -60,7 +61,8 @@
     "x:acceleration/cone-taps": 1795448789920,
     "x:shooting/free-kicks": 1795537954638,
     "x:shooting/touch-and-shoot": 1795537960823,
-    "x:shooting/technique-fundamentals": 1795537967506
+    "x:shooting/technique-fundamentals": 1795537967506,
+    "x:stamina/cmwtfmlyo0": 1795537988194
   },
   "eggs": {}
 }
