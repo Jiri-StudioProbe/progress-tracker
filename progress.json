@@ -32,7 +32,8 @@
       ],
       "stamina": [
         "lunges",
-        "cmwtfmlyo0"
+        "cmwtfmlyo0",
+        "slow-running"
       ],
       "aggressive": [
         "shielding-practice"
@@ -71,7 +72,7 @@
   },
   "stamps": {
     "d:2026-11-23": 1795450320989,
-    "d:2026-11-24": 1795538911862,
+    "d:2026-11-24": 1795539180138,
     "x:acceleration/run-on-the-spot": 1795448286829,
     "x:acceleration/butt-kicks": 1795448444861,
     "x:acceleration/cone-taps": 1795448789920,
@@ -84,5 +85,7 @@
     "x:stamina/lunges": 1795538639479,
     "x:aggressive/shielding-practice": 1795538907754
   },
-  "eggs": {}
+  "eggs": {
+    "2026-11-24": "var"
+  }
 }
