@@ -47,14 +47,16 @@
   "details": {
     "acceleration/run-on-the-spot": "3 min",
     "acceleration/butt-kicks": "1 min",
-    "acceleration/cone-taps": "1 min"
+    "acceleration/cone-taps": "1 min",
+    "shooting/free-kicks": "5 min"
   },
   "stamps": {
     "d:2026-11-23": 1795450320989,
     "d:2026-11-24": 1795537946509,
     "x:acceleration/run-on-the-spot": 1795448286829,
     "x:acceleration/butt-kicks": 1795448444861,
-    "x:acceleration/cone-taps": 1795448789920
+    "x:acceleration/cone-taps": 1795448789920,
+    "x:shooting/free-kicks": 1795537954638
   },
   "eggs": {}
 }
