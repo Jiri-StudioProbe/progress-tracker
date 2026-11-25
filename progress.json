@@ -73,7 +73,7 @@
     "stamina/cmwtfmlyo0": "45 seconds",
     "acceleration/high-knees": "3 min",
     "acceleration/falling-starts": "8 times",
-    "stamina/lunges": "3 min",
+    "stamina/lunges": "2 min",
     "aggressive/shielding-practice": "school 30 min",
     "stamina/slow-running": "5 min"
   },
@@ -90,7 +90,7 @@
     "x:stamina/cmwtfmlyo0": 1795537988194,
     "x:acceleration/high-knees": 1795538205134,
     "x:acceleration/falling-starts": 1795538444055,
-    "x:stamina/lunges": 1795538639479,
+    "x:stamina/lunges": 1795629860820,
     "x:aggressive/shielding-practice": 1795542522107,
     "x:stamina/slow-running": 1795542450593
   },
