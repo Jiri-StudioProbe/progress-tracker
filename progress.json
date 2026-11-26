@@ -79,7 +79,7 @@
     "acceleration/high-knees": "3 min",
     "acceleration/falling-starts": "8 times",
     "stamina/lunges": "2 min",
-    "aggressive/shielding-practice": "school 30 min",
+    "aggressive/shielding-practice": "",
     "stamina/slow-running": "5 min"
   },
   "stamps": {
@@ -96,7 +96,7 @@
     "x:acceleration/high-knees": 1795538205134,
     "x:acceleration/falling-starts": 1795538444055,
     "x:stamina/lunges": 1795629860820,
-    "x:aggressive/shielding-practice": 1795542522107,
+    "x:aggressive/shielding-practice": 1795708767123,
     "x:stamina/slow-running": 1795542450593
   },
   "eggs": {
