@@ -56,7 +56,8 @@
       ],
       "shooting": [
         "touch-and-shoot",
-        "free-kicks"
+        "free-kicks",
+        "technique-fundamentals"
       ]
     }
   },
@@ -83,7 +84,7 @@
     "acceleration/cone-taps": "1 min",
     "shooting/free-kicks": "10 min",
     "shooting/touch-and-shoot": "10 min",
-    "shooting/technique-fundamentals": "2 min",
+    "shooting/technique-fundamentals": "10 min",
     "stamina/cmwtfmlyo0": "45 seconds",
     "acceleration/high-knees": "3 min",
     "acceleration/falling-starts": "8 times",
@@ -95,13 +96,13 @@
     "d:2026-11-23": 1795542511818,
     "d:2026-11-24": 1795542480473,
     "d:2026-11-25": 1795708740178,
-    "d:2026-11-26": 1795710173757,
+    "d:2026-11-26": 1795710180624,
     "x:acceleration/run-on-the-spot": 1795448286829,
     "x:acceleration/butt-kicks": 1795448444861,
     "x:acceleration/cone-taps": 1795448789920,
     "x:shooting/free-kicks": 1795710171553,
     "x:shooting/touch-and-shoot": 1795710164597,
-    "x:shooting/technique-fundamentals": 1795537967506,
+    "x:shooting/technique-fundamentals": 1795710179438,
     "x:stamina/cmwtfmlyo0": 1795537988194,
     "x:acceleration/high-knees": 1795538205134,
     "x:acceleration/falling-starts": 1795538444055,
