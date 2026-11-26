@@ -43,6 +43,11 @@
       "stamina": [
         "lunges",
         "squats"
+      ],
+      "shooting": [
+        "technique-fundamentals",
+        "touch-and-shoot",
+        "free-kicks"
       ]
     }
   },
@@ -80,7 +85,7 @@
   "stamps": {
     "d:2026-11-23": 1795542511818,
     "d:2026-11-24": 1795542480473,
-    "d:2026-11-25": 1795629849432,
+    "d:2026-11-25": 1795708740178,
     "x:acceleration/run-on-the-spot": 1795448286829,
     "x:acceleration/butt-kicks": 1795448444861,
     "x:acceleration/cone-taps": 1795448789920,
