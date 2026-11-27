@@ -114,7 +114,8 @@
     "acceleration/falling-starts": "8 times",
     "stamina/lunges": "2 min",
     "aggressive/shielding-practice": "",
-    "stamina/slow-running": "mostoflunch"
+    "stamina/slow-running": "mostoflunch",
+    "shooting/quick-footwork-approach": "10 min"
   },
   "stamps": {
     "d:2026-11-23": 1795542511818,
@@ -133,7 +134,8 @@
     "x:acceleration/falling-starts": 1795538444055,
     "x:stamina/lunges": 1795629860820,
     "x:aggressive/shielding-practice": 1795708767123,
-    "x:stamina/slow-running": 1795708791217
+    "x:stamina/slow-running": 1795708791217,
+    "x:shooting/quick-footwork-approach": 1795794665789
   },
   "eggs": {
     "2026-11-24": "var",
