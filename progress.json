@@ -98,7 +98,8 @@
       "stamina": [
         "slow-running",
         "laps",
-        "squats"
+        "squats",
+        "cmwtfmlyo0"
       ],
       "aggressive": [
         "shielding-practice"
@@ -109,7 +110,9 @@
         "quick-footwork-approach"
       ],
       "acceleration": [
-        "high-knees"
+        "high-knees",
+        "run-on-the-spot",
+        "cone-taps"
       ]
     }
   },
@@ -151,7 +154,7 @@
     "d:2026-11-25": 1795710806558,
     "d:2026-11-26": 1795710209308,
     "d:2026-11-27": 1795794701294,
-    "d:2026-11-28": 1795886747173,
+    "d:2026-11-28": 1795886752279,
     "x:acceleration/run-on-the-spot": 1795448286829,
     "x:acceleration/butt-kicks": 1795448444861,
     "x:acceleration/cone-taps": 1795448789920,
