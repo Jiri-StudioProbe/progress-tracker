@@ -93,6 +93,11 @@
         "cone-taps",
         "change-of-speed-dribbling"
       ]
+    },
+    "2026-11-28": {
+      "stamina": [
+        "slow-running"
+      ]
     }
   },
   "custom": {
@@ -133,7 +138,7 @@
     "d:2026-11-25": 1795710806558,
     "d:2026-11-26": 1795710209308,
     "d:2026-11-27": 1795794701294,
-    "d:2026-11-28": 1795886713752,
+    "d:2026-11-28": 1795886715762,
     "x:acceleration/run-on-the-spot": 1795448286829,
     "x:acceleration/butt-kicks": 1795448444861,
     "x:acceleration/cone-taps": 1795448789920,
